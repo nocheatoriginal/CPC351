@@ -1,3 +1,5 @@
+setwd("") # Set working directory!!
+
 # Task 1
 
 q1_path <- "Data/Q1"
@@ -100,7 +102,8 @@ top_10 <- head(word_freq_sorted, 10)
 
 cat("[2b] Top 10 most frequent words:", paste(names(top_10), top_10, sep = ": ", collapse = ", "), "\n")
 
-task3
+# Task 3
+
 ## 1. Define 10 points (coordinates)
 points <- data.frame(
   id = 1:10,
