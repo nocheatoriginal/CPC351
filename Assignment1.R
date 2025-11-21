@@ -1,4 +1,4 @@
-setwd("/Users/nils/Desktop/HHN/Sem-6/courses/CPC351/CPC351_Assignment1") # Set working directory!!
+setwd("") # Set working directory!!
 
 # Task 1
 
