@@ -1,4 +1,4 @@
-setwd("") # Set working directory!!
+setwd("/Users/nils/Desktop/HHN/Sem-6/courses/CPC351/CPC351_Assignment1") # Set working directory!!
 
 # Task 1
 
@@ -323,6 +323,118 @@ arrows(px[-length(px)], py[-length(py)], px[-1], py[-1], length=0.1, col="red")
 
 points(px[1], py[1], pch=21, bg="yellow", cex=2)
 
+# Task 4
+
+# --- 1. Split the CSV file ---
+
+# Read the csv file
+tracks <- read.csv("Data/Q4/tracks_features.csv")
+
+# Choose which columns you want to split up
+# (if the assignment says "first 24 columns", keep 1:24;
+#  if you want all columns, use 1:ncol(tracks))
+selected_cols <- 1:24
+
+# ---- Row splits ----
+# If you MUST use the fixed 250k chunks and your file is very large,
+# keep your original row_splits but make sure row_end does not exceed nrow(tracks)
+row_splits <- list(
+  c(1, 250000),
+  c(250001, 500000),
+  c(500001, 750000),
+  c(750001, 1000000),
+  c(1000001, nrow(tracks))
+)
+
+# Alternatively, a robust automatic split into 5 chunks:
+# chunk_size <- ceiling(nrow(tracks) / 5)
+# row_splits <- lapply(0:4, function(k) {
+#   start <- k * chunk_size + 1
+#   end   <- min((k + 1) * chunk_size, nrow(tracks))
+#   c(start, end)
+# })
+
+# ---- Column splits (groups of 3 columns) ----
+col_splits <- split(
+  selected_cols,
+  ceiling(seq_along(selected_cols) / 3)   # every 3 columns one group
+)
+
+# Counts which file we have already processed
+file_counter <- 1
+
+# Splitting on the defined rows
+for (i in seq_along(row_splits)) {
+  
+  row_start <- row_splits[[i]][1]
+  row_end   <- row_splits[[i]][2]
+  
+  # Safeguard: don't go beyond the number of rows
+  row_end <- min(row_end, nrow(tracks))
+  
+  # Get row chunk
+  row_chunk <- tracks[row_start:row_end, ]
+  
+  # Splitting on the defined columns
+  for (j in seq_along(col_splits)) {
+    
+    cols <- col_splits[[j]]
+    
+    # Get row chunk / subset
+    subset_df <- row_chunk[, cols, drop = FALSE]
+    
+    # Construct filename
+    filename <- sprintf("Data/Q4/spotify_%02d.csv", file_counter)
+    
+    # Write to directory
+    write.csv(subset_df, filename, row.names = FALSE)
+    
+    file_counter <- file_counter + 1
+  }
+}
+
+# --- 2. Import the new csv files ---
+
+# Get all generated csv files (only the split ones, not the original)
+split_files <- list.files("Data/Q4",
+                          pattern = "^spotify_.*\\.csv$",
+                          full.names = TRUE)
+
+# sort files numerically by the number in the filename
+split_files <- split_files[order(
+  as.numeric(sub("spotify_(\\d+)\\.csv", "\\1", basename(split_files)))
+)]
+
+# Read files
+all_splits_list <- lapply(split_files, read.csv)
+
+# --- 3. Combine back into data frame ---
+
+combined_rows <- list()
+k <- length(col_splits)  # number of column chunks per row chunk
+
+for (i in seq_along(row_splits)) {
+  # Get the k files corresponding to this row chunk
+  start_index <- (i - 1) * k + 1
+  end_index   <- i * k
+  
+  # Bind the k column files side by side
+  row_combined_df <- do.call(cbind, all_splits_list[start_index:end_index])
+  combined_rows[[i]] <- row_combined_df
+}
+
+# Bind the combined rows into complete data frame
+complete <- do.call(rbind, combined_rows)
+
+print(dim(complete))
+print(dim(tracks_df))
+
+# Optional: check that the reconstruction matches the original selection
+original_subset <- tracks[, selected_cols]
+identical(nrow(original_subset), nrow(complete))
+identical(ncol(original_subset), ncol(complete))
+all.equal(original_subset, complete)
+
 # Task 5
 solve_10_queens <- function(solution_vector) {
   cat("\nAnalyzing solution vector:", paste(solution_vector, collapse = ", "), "\n")
@@ -527,7 +639,7 @@ validate_sudoku <- function(puzzle_matrix) {
 }
 
 # --- Main validation process (processes two input files)---
-sudoku_files <- c("/Users/sherlock/Desktop/Y3S1/351/A1/Q6/Q6_Input_01.txt", "/Users/sherlock/Desktop/Y3S1/351/A1/Q6/Q6_Input_02.txt")
+sudoku_files <- c("Data/Q6/Q6_Input_01.txt", "Data/Q6/Q6_Input_02.txt")
 
 for (file in sudoku_files) {
   cat("\n--- Analyzing Sudoku File:", basename(file), "---\n")

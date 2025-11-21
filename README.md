@@ -6,34 +6,34 @@ This repository contains our solutions for Assignment 1 of the CPC351 course. Th
 
 The assignment consists of six main tasks that involve data manipulation and analysis using R:
 
-1.  **Student Enrollment Analysis:** (Status: Solved)
+1.  **Student Enrollment Analysis:**
     *   Reads multiple text files, each containing a list of student names for a specific course.
     *   Calculates enrollment statistics, such as the courses with the highest and lowest number of students.
     *   Determines the total number of distinct students across all courses.
     *   Implements a function to find all courses a specific student is registered for.
     *   Performs set operations to identify students enrolled in specific combinations of courses (e.g., in course A AND B, in A but NOT B, etc.).
 
-2.  **Textual Data Analysis:** (Status: Solved)
+2.  **Textual Data Analysis:**
     *   Reads and merges content from multiple text files.
     *   Counts the occurrences of specific target words within the combined text.
     *   Cleans the text, tokenizes it into words, and calculates the frequency of each word to identify the top 10 most frequent words.
 
-3.  **Traveling Salesperson Problem (Heuristic Approach):** (Status: Not Solved)
+3.  **Traveling Salesperson Problem (Heuristic Approach):**
     *   Solves the Traveling Salesperson Problem for ten locations on a Cartesian plane.
     *   Uses the Sorted Edges (Cheapest Link) heuristic algorithm to generate a Hamiltonian tour.
     *   The R program will design the round trip, report the total distance, and account for variable travel costs (e.g., traffic, weather).
 
-4.  **Spotify Track Features Analysis:** (Status: Not Solved)
+4.  **Spotify Track Features Analysis:**
     *   Processes the `tracks_features.csv` dataset containing audio features for over 1.2 million songs.
     *   Splits the large CSV file into 40 smaller CSV files based on a specified structure.
     *   Imports the 40 split files back into R and combines them into a single data frame named `complete`.
 
-5.  **Ten Queens Puzzle:** (Status: Not Solved)
+5.  **Ten Queens Puzzle:**
     *   Solves the Ten Queens Puzzle, which involves placing ten queens on a 10x10 chessboard without any attacking each other.
     *   Represents the board as a 10x10 matrix and takes a vector input representing queen positions.
     *   Determines if a given solution is feasible. If not, it visually highlights and lists all pairs of attacking queens.
 
-6.  **12x12 Sudoku Puzzle Solver:** (Status: Not Solved)
+6.  **12x12 Sudoku Puzzle Solver:**
     *   Analyzes a 12x12 Sudoku puzzle with numbers 1-9 and letters A-C.
     *   The program reads two input files, maps them to a 12x12 matrix, and validates the puzzle against Sudoku rules (row, column, and 3x4 block uniqueness).
     *   For infeasible puzzles, it must identify and describe all rule violations.
