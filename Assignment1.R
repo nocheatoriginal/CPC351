@@ -2,18 +2,23 @@ setwd("") # Set working directory!!
 
 # Task 1
 
+# Load all text-files from Data/Q1
 q1_path <- "Data/Q1"
 q1_files <- list.files(q1_path, pattern = "^Q1_.*\\.txt$", full.names = TRUE)
 
 course_codes <- sub("^Q1_(.*)\\.txt$", "\\1", basename(q1_files))
 
+# Save all students to a list
 student_lists <- lapply(q1_files, function(f) readLines(f, warn = FALSE))
 names(student_lists) <- course_codes
 
+
+# Calculate the min and max enrollment count
 enrollment_counts <- sapply(student_lists, length)
 max_n <- max(enrollment_counts)
 min_n <- min(enrollment_counts)
 
+# Find the correlating courses
 courses_max <- names(enrollment_counts[enrollment_counts == max_n])
 courses_min <- names(enrollment_counts[enrollment_counts == min_n])
 
@@ -22,10 +27,12 @@ cat("[1a] Course with highest number of students:",
 cat("[1a] Course with lowest number of students :",
     paste(courses_min, collapse = ", "), "with", min_n, "students\n")
 
+# Find all distinct students
 all_students <- unlist(student_lists)
 distinct_students <- unique(all_students)
 cat("[1b] Total number of distinct students:", length(distinct_students), "\n")
 
+# Find coursed by student's name
 find_courses_by_student <- function(student_name) {
   courses <- names(student_lists)[sapply(student_lists,
                                          function(x) student_name %in% x)]
@@ -43,19 +50,24 @@ find_courses_by_student("NAME001")
 cds512 <- student_lists[["CDS512"]]
 cds521 <- student_lists[["CDS521"]]
 
+# Find all students that are enrolled for CDS512 and CDS521
 both_512_521 <- intersect(cds512, cds521)
 cat("[1d] Students in CDS512 AND CDS521:", paste(both_512_521, collapse = ", "), "\n")
 
+# Find all students that are enrolled to CDS512, but not CDS521
 only_512 <- setdiff(cds512, cds521)
 cat("[1e] Students in CDS512 but NOT CDS521:", paste(only_512, collapse = ", "), "\n")
 
+# Find all students that are enrolled to CDS521, but not CDS512
 only_521 <- setdiff(cds521, cds512)
 cat("[1f] Students in CDS521 but NOT CDS512:", paste(only_521, collapse = ", "), "\n")
 
+# Find all students that are not in CDS512 and not in CDS521
 in_512_or_521 <- union(cds512, cds521)
 not_512_nor_521 <- setdiff(distinct_students, in_512_or_521)
 cat("[1g] Students NOT in CDS512 and NOT in CDS521:", paste(not_512_nor_521, collapse = ", "), "\n")
 
+# Find all students registered for ecactly 3 courses
 student_course_counts <- table(all_students)
 students_3_courses <- names(student_course_counts[student_course_counts == 3])
 
@@ -67,14 +79,17 @@ cat("[1h] Students registered for exactly three courses:", paste(students_3_cour
 
 # Task 2
 
+# Load all text-files from Data/Q2
 q2_path <- "Data/Q2"
 q2_files <- list.files(q2_path, pattern = "^Q2_Part_.*\\.txt$", full.names = TRUE)
 
+# Read the texts
 q2_texts <- sapply(q2_files, function(f) {
   paste(readLines(f, warn = FALSE), collapse = " ")
 })
 full_text <- paste(q2_texts, collapse = " ")
 
+# A function to count the number of a specific word in a text
 count_word <- function(word, text) {
   pattern <- paste0("\\b", word, "\\b")
   matches <- gregexpr(pattern, tolower(text), ignore.case = TRUE)
@@ -85,12 +100,13 @@ count_word <- function(word, text) {
   }
 }
 
+# Find the total occurrences of 'analytics', 'insight' and 'of'
 words_target <- c("analytics", "insight", "of")
 counts <- sapply(words_target, count_word, text = full_text)
 
 cat("[2a] Total occurrences across all 10 files:", paste(names(counts), counts, sep = ": ", collapse = ", "), "\n")
 
-
+# Find the top 10 mos frequent words
 clean_text <- tolower(full_text)
 clean_text <- gsub("[^a-z]+", " ", clean_text)
 word_vec <- unlist(strsplit(clean_text, "\\s+"))
