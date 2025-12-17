@@ -38,7 +38,7 @@ The `Data` directory, which contains the datasets for this assignment, is not in
 To run the script, you must **manually add the `Food_Nutrition_Dataset.csv` file** to the `Data` folder. The expected structure is as follows:
 
 ```
-CPC351_Assignment2/
+CPC351-repo/Assignment2/
 ├── Assignment2.R
 ├── README.md
 └── Data/

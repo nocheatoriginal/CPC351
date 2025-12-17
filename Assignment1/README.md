@@ -47,7 +47,7 @@ The `Data` directory, which contains the datasets for this assignment, is not in
 To run the script, you must **manually add the `Data` folder** to the root of the project directory. The expected structure is as follows:
 
 ```
-CPC351_Assignment1/
+CPC351-repo/Assignment1/
 ├── Assignment1.R
 ├── README.md
 └── Data/
