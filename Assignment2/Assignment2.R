@@ -34,8 +34,8 @@ zero_values <- sapply(food_nutrition_values, function(col) {
 })
 barplot(zero_values, las = 2, ylab = "Number of zero-values", main = "Q2: Zero-values per column")
 
-# Total missing values including NA and 0.0
-missing_values <- na_values + blank_values + zero_values
+# Total missing values including NA and white spaces (excluding 0.0-values)
+missing_values <- na_values + blank_values
 barplot(missing_values, las = 2, ylab = "Number of missing values", main = "Q2: Missing values per column")
 
 # Print a table of all 0-value entries:
@@ -55,6 +55,8 @@ zero_table <- data.frame(
 
 # View(zero_table)
 zero_table
+# The table containing entries with 0.0 values does not allow for any conclusions 
+# regarding incorrect data, therefore the results are not included in the overall statistics!
 
 #
 # Question 3: Display the number of unique food categories.
