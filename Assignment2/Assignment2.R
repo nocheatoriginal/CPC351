@@ -20,22 +20,23 @@ summary(food_nutrition_df)
 food_nutrition_values <- food_nutrition_df[,3:8]
 
 na_values <- colSums(is.na(food_nutrition_values))
-
 barplot(na_values, las = 2, ylab = "Number of NA-values", main = "Q2: NA-values per column")
 
+blank_values <- sapply(food_nutrition_values, function(x) {
+  if (is.character(x)) sum(trimws(x) == "", na.rm = TRUE) else 0
+})
+blank_values
+barplot(blank_values, las = 2, ylab = "Number of blank-values", main = "Q2: Blank-values per column")
 
 
 zero_values <- sapply(food_nutrition_values, function(col) {
   sum(!is.na(col) & col == 0)
 })
-
 barplot(zero_values, las = 2, ylab = "Number of zero-values", main = "Q2: Zero-values per column")
 
 # Total missing values including NA and 0.0
-missing_values <- na_values + zero_values
+missing_values <- na_values + blank_values + zero_values
 barplot(missing_values, las = 2, ylab = "Number of missing values", main = "Q2: Missing values per column")
-
-
 
 # Print a table of all 0-value entries:
 entry_name <- food_nutrition_df[[1]]
