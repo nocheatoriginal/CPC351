@@ -137,6 +137,80 @@ library(ggplot2)
 
 library(dplyr)
 
+#
+# Question 9: Generate a correlation heatmap for numeric columns (calories, protein, carbs, fat, iron, vitamin_c).
+# Initial correlation map
+cormat <- cor(food_nutrition_values, use = "pairwise.complete.obs")
+
+reorder_cormat <- function(cormat) {
+  dd <- as.dist((1 - cormat) / 2)
+  hc <- hclust(dd)
+  cormat[hc$order, hc$order]
+}
+
+# Only using lower side
+cormat <- reorder_cormat(cormat)
+cormat[lower.tri(cormat)] <- NA
+
+# melting into usable form for reshape
+melted_cormat <- melt(cormat, na.rm = TRUE)
+
+# plot heatmap
+ggplot(melted_cormat, aes(Var2, Var1, fill = value)) +
+  geom_tile(color = "white") +
+  geom_text(aes(label = round(value, 2)), size = 4) +
+  scale_fill_gradient2(
+    low = "blue", mid = "white", high = "red",
+    midpoint = 0, limit = c(-1, 1),
+    name = "Pearson\nCorrelation"
+  ) +
+  coord_fixed() +
+  theme_minimal() +
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 1),
+    axis.title = element_blank(),
+    panel.grid = element_blank(),
+    axis.ticks = element_blank(),
+    legend.position = "bottom"
+  ) +
+  guides(fill = guide_colorbar(
+    barwidth = 7, barheight = 1,
+    title.position = "top", title.hjust = 0.5
+  )) +
+  labs(title = "Correlation Heatmap")
+
+#
+
+# Question 10: Create a bar chart showing the top 10 categories by average vitamin C content.
+
+# Compute average vitamin C level per category
+avg_vitC <- aggregate(vitamin_c ~ category, data = food_nutrition_df, FUN = mean, na.rm = TRUE)
+names(avg_vitC)[names(avg_vitC) == "vitamin_c"] <- "avg_vitamin_c"
+
+# Compute # of items in each category
+counts <- aggregate(vitamin_c ~ category, data = food_nutrition_df, FUN = length)
+names(counts)[names(counts) == "vitamin_c"] <- "count"
+
+avg_vitC <- merge(avg_vitC, counts, by = "category")
+
+# Sort descending by average vitamin C and keep top 10
+avg_vitC <- avg_vitC[order(-avg_vitC$avg_vitamin_c), ]
+top10_vitC <- head(avg_vitC, 10)
+
+# Create custom label 
+top10_vitC$category_label <- paste0(top10_vitC$category, " / ", top10_vitC$count)
+
+# plot bar chart
+ggplot(top10_vitC, aes(x = reorder(category_label, avg_vitamin_c), y = avg_vitamin_c)) +
+  geom_bar(stat = "identity", fill = "steelblue") +
+  coord_flip() +  # horizontal bars
+  labs(
+    title = "Top 10 Categories by Average Vitamin C",
+    x = "Category / Number of Items",
+    y = "Average Vitamin C (mg)"
+  ) +
+  theme_minimal()
+
 # Q11:  Identify foods with extremely high fat content (above 95th percentile) and visualize them. 
 # Step 1: Compute the 95th percentile of fat content.
 fat_p95 <- quantile(food_nutrition_df$fat, probs = 0.95, na.rm = TRUE)
